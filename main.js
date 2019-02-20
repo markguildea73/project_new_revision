@@ -14,6 +14,7 @@
         
         // charts 
         
+        
         show_composite_trend(ndx);
         
         show_scatter_plot(ndx);
@@ -92,6 +93,7 @@
 
         }
         
+        
         function data_list(ndx){
             d3.csv("file.csv", function(error, data) {
 		  if (error) throw error;
@@ -106,20 +108,6 @@
 		                   .text(function (d) {
 			                    return d;
 		                    })
-		                   .on('click', function (d) {
-		                	   headers.attr('class', 'header');
-		                	   
-		                	   if (sortAscending) {
-		                	     rows.sort(function(a, b) { return b[d] < a[d]; });
-		                	     sortAscending = false;
-		                	     this.className = 'aes';
-		                	   } else {
-		                		 rows.sort(function(a, b) { return b[d] > a[d]; });
-		                		 sortAscending = true;
-		                		 this.className = 'des';
-		                	   }
-		                	   
-		                   });
 		  
 		  var rows = table.append('tbody').selectAll('tr')
 		               .data(data).enter()
