@@ -10,6 +10,8 @@
         var parseDate = d3.time.format("%d/%m/%Y %H:%M").parse;
         data.forEach(function(d){
             d.date = parseDate(d.date);
+            d.temp1 = +d.temp1
+            
         });
         
         // charts 
@@ -18,6 +20,8 @@
         show_composite_trend(ndx);
         
         show_scatter_plot(ndx);
+        
+        show_scatter_plot_2(ndx)
         
         data_list(ndx);
         
@@ -93,6 +97,60 @@
 
         }
         
+        function show_scatter_plot_2(ndx){
+        var date_dim = ndx.dimension(dc.pluck('date'));
+        var minDate = date_dim.bottom(1)[0].date;
+        var maxDate = date_dim.top(1)[0].date;
+      
+    
+        
+        
+        var temp_dim_1 = ndx.dimension(function (d) {
+        return [d.date, d.temp1];
+        })
+        var temp_dim_2 = ndx.dimension(function (d) {
+        return [d.date, d.temp2];
+        })
+        var temp_dim_3 = ndx.dimension(function (d) {
+        return [d.date, d.temp3];
+        })
+        var temp_group_1 = temp_dim_1.group();
+        var temp_group_2 = temp_dim_2.group();
+        var temp_group_3 = temp_dim_3.group();
+        
+        var scatter = dc.compositeChart('#trend-box-plot-comp');
+        
+        scatter
+            .width(450)
+            .height(200)
+            .dimension(date_dim)
+            .x(d3.time.scale().domain([minDate, maxDate]))
+            .y(d3.scale.linear().domain([0,10]))
+            .yAxisLabel("Temperature")
+            .xAxisLabel("Date")
+            .legend(dc.legend().x(80).y(2).itemHeight(13).gap(5))
+            .renderHorizontalGridLines(true)
+            .elasticX(false)
+            .compose([
+                dc.scatterPlot(scatter)
+                    .colors('green')
+                    .group(temp_group_1, "temp1")
+                    .symbolSize(2)
+                    .clipPadding(10),
+                dc.scatterPlot(scatter)
+                    .colors('red')
+                    .group(temp_group_2, "temp2")
+                    .symbolSize(2)
+                    .clipPadding(10),
+                dc.scatterPlot(scatter)
+                    .colors('blue')
+                    .group(temp_group_3, "temp3")
+                    .symbolSize(2)
+                    .clipPadding(10)
+            ])
+            .brushOn(false)
+            
+         }
         
         function data_list(ndx){
             d3.csv("file.csv", function(error, data) {
